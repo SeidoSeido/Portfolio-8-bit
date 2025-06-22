@@ -23,92 +23,150 @@
             </div>
           </div>
         </div>
-        <div class="hero-right">          <div class="game-container pixel-game-slide" ref="gameContainer"><div class="game-header">
+        <div class="hero-right">          <div class="game-container pixel-game-slide" ref="gameContainer">            <div class="game-header">
               <h3 class="game-title glitch-text">
-                <span class="glitch-char">P</span><span class="glitch-char">O</span><span class="glitch-char">N</span><span class="glitch-char">G</span>
-                <span class="space">&nbsp;</span>
-                <span class="glitch-char">G</span><span class="glitch-char">A</span><span class="glitch-char">M</span><span class="glitch-char">E</span>
+                <span v-for="char in currentGameTitle" :key="char.id" class="glitch-char">{{ char.letter }}</span>
               </h3>
               <div class="game-controls">
-                <button v-if="!gameActive && !gameStarted" @click="startGame" class="game-btn">PLAY</button>
+                <button v-if="!gameActive && !gameStarted" @click="startRandomGame" class="game-btn">PLAY RANDOM</button>
+                <button v-if="!gameActive && !gameStarted" @click="selectGame" class="game-btn secondary">SELECT GAME</button>
                 <button v-if="gameActive" @click="pauseGame" class="game-btn">{{ gamePaused ? 'RESUME' : 'PAUSE' }}</button>
                 <button v-if="gameActive || gameStarted" @click="cancelGame" class="game-btn cancel">CANCEL</button>
               </div>
-            </div>
-            <div class="game-stats">
+            </div>            <div class="game-stats">
               <div class="stat">
-                <span class="stat-label">PLAYER</span>
+                <span class="stat-label">{{ currentGame.toUpperCase() }}</span>
+                <span class="stat-value">{{ currentGameTitle.map(c => c.letter).join('') }}</span>
+              </div>
+              <div class="stat" v-if="gameStarted">
+                <span class="stat-label">SCORE</span>
                 <span class="stat-value">{{ playerScore }}</span>
               </div>
-              <div class="stat">
+              <div class="stat" v-if="gameStarted && currentGame === 'pong'">
                 <span class="stat-label">CPU</span>
                 <span class="stat-value">{{ cpuScore }}</span>
               </div>
-              <div class="stat">
-                <span class="stat-label">SPEED</span>
-                <span class="stat-value">{{ gameSpeed }}</span>
-              </div>
-            </div>
-            <div class="game-board" ref="gameBoard" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">
-              <!-- Mobile Touch Controls -->
-              <div v-if="gameActive && isMobile" class="mobile-controls">
-                <button 
-                  class="touch-btn touch-up" 
-                  @touchstart="handleTouchStart('up')"
-                  @touchend="handleTouchEnd('up')"
-                  @mousedown="handleTouchStart('up')"
-                  @mouseup="handleTouchEnd('up')"
-                >
-                  ↑
-                </button>
-                <button 
-                  class="touch-btn touch-down" 
-                  @touchstart="handleTouchStart('down')"
-                  @touchend="handleTouchEnd('down')"
-                  @mousedown="handleTouchStart('down')"
-                  @mouseup="handleTouchEnd('down')"
-                >
-                  ↓
-                </button>
+            </div>            <div class="game-board" ref="gameBoard" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">              <!-- Mobile Touch Controls -->
+              <div v-if="gameActive && isMobile && (currentGame === 'pong' || currentGame === 'snake')" 
+                   class="mobile-controls" 
+                   :class="{ 
+                     'snake-controls': currentGame === 'snake'
+                   }">
+                <template v-if="currentGame === 'pong'">
+                  <button 
+                    class="touch-btn touch-up" 
+                    @touchstart="handleTouchStart('up')"
+                    @touchend="handleTouchEnd('up')"
+                    @mousedown="handleTouchStart('up')"
+                    @mouseup="handleTouchEnd('up')"
+                  >
+                    ↑
+                  </button>
+                  <button 
+                    class="touch-btn touch-down" 
+                    @touchstart="handleTouchStart('down')"
+                    @touchend="handleTouchEnd('down')"
+                    @mousedown="handleTouchStart('down')"
+                    @mouseup="handleTouchEnd('down')"
+                  >
+                    ↓
+                  </button>
+                </template>
+                <template v-if="currentGame === 'snake'">
+                  <button 
+                    class="touch-btn touch-up" 
+                    @touchstart="handleTouchStart('up')"
+                    @touchend="handleTouchEnd('up')"
+                    @mousedown="handleTouchStart('up')"
+                    @mouseup="handleTouchEnd('up')"
+                  >
+                    ↑
+                  </button>
+                  <button 
+                    class="touch-btn touch-down" 
+                    @touchstart="handleTouchStart('down')"
+                    @touchend="handleTouchEnd('down')"
+                    @mousedown="handleTouchStart('down')"
+                    @mouseup="handleTouchEnd('down')"
+                  >
+                    ↓
+                  </button>
+                  <button 
+                    class="touch-btn touch-left" 
+                    @touchstart="handleTouchStart('left')"
+                    @touchend="handleTouchEnd('left')"
+                    @mousedown="handleTouchStart('left')"
+                    @mouseup="handleTouchEnd('left')"
+                  >
+                    ←
+                  </button>
+                  <button 
+                    class="touch-btn touch-right" 
+                    @touchstart="handleTouchStart('right')"
+                    @touchend="handleTouchEnd('right')"
+                    @mousedown="handleTouchStart('right')"
+                    @mouseup="handleTouchEnd('right')"
+                  >
+                    →
+                  </button>
+                </template>
               </div>
 
-              <!-- Player Paddle -->
-              <div 
-                v-if="gameActive || gameStarted"
-                class="paddle player-paddle" 
-                :style="{ left: '20px', top: playerPaddle.y + 'px' }"
-              >
-                <div class="pixel-paddle"></div>
-              </div>
-              
-              <!-- CPU Paddle -->
-              <div 
-                v-if="gameActive || gameStarted"
-                class="paddle cpu-paddle" 
-                :style="{ right: '20px', top: cpuPaddle.y + 'px' }"
-              >
-                <div class="pixel-paddle"></div>
-              </div>
-              
-              <!-- Ball -->
-              <div 
-                v-if="gameActive || gameStarted"
-                class="ball" 
-                :style="{ left: ball.x + 'px', top: ball.y + 'px' }"
-              >
-                <div class="pixel-ball"></div>
-              </div>
-              
-              <!-- Center Line -->
-              <div v-if="gameActive || gameStarted" class="center-line">
-                <div class="line-segment" v-for="i in 10" :key="i"></div>
-              </div>
-                <!-- Game Over Screen -->
-              <div v-if="!gameActive && gameStarted && !gamePaused" class="game-overlay">
+              <!-- PONG GAME ELEMENTS -->
+              <template v-if="currentGame === 'pong' && (gameActive || gameStarted)">
+                <!-- Player Paddle -->
+                <div 
+                  class="paddle player-paddle" 
+                  :style="{ left: '20px', top: playerPaddle.y + 'px' }"
+                >
+                  <div class="pixel-paddle"></div>
+                </div>
+                
+                <!-- CPU Paddle -->
+                <div 
+                  class="paddle cpu-paddle" 
+                  :style="{ right: '20px', top: cpuPaddle.y + 'px' }"
+                >
+                  <div class="pixel-paddle"></div>
+                </div>
+                
+                <!-- Ball -->
+                <div 
+                  class="ball" 
+                  :style="{ left: ball.x + 'px', top: ball.y + 'px' }"
+                >
+                  <div class="pixel-ball"></div>
+                </div>
+                
+                <!-- Center Line -->
+                <div class="center-line">
+                  <div class="line-segment" v-for="i in 10" :key="i"></div>
+                </div>
+              </template>
+
+              <!-- SNAKE GAME ELEMENTS -->
+              <template v-if="currentGame === 'snake' && (gameActive || gameStarted)">
+                <!-- Snake Body -->
+                <div 
+                  v-for="(segment, index) in snake.body" 
+                  :key="index"
+                  class="snake-segment"
+                  :class="{ 'snake-head': index === 0 }"
+                  :style="{ left: segment.x + 'px', top: segment.y + 'px' }"
+                ></div>
+                
+                <!-- Snake Food -->
+                <div 
+                  class="snake-food"
+                  :style="{ left: snake.food.x + 'px', top: snake.food.y + 'px' }"
+                ></div>              </template>
+
+              <!-- Game Over Screen --><div v-if="!gameActive && gameStarted && !gamePaused" class="game-overlay">
                 <div class="game-over">
                   <h4>{{ gameWinner ? `${gameWinner.toUpperCase()} WINS!` : 'GAME OVER' }}</h4>
-                  <p>FINAL SCORE: {{ playerScore }} - {{ cpuScore }}</p>
-                  <button @click="startGame" class="game-btn">PLAY AGAIN</button>
+                  <p v-if="currentGame === 'pong'">FINAL SCORE: {{ playerScore }} - {{ cpuScore }}</p>
+                  <p v-else>FINAL SCORE: {{ playerScore }}</p>
+                  <button @click="startCurrentGame" class="game-btn">PLAY AGAIN</button>
                 </div>
               </div>
               
@@ -118,15 +176,28 @@
                   <h4>PAUSED</h4>
                   <p>PRESS RESUME TO CONTINUE</p>
                 </div>
-              </div>
-                <!-- Start Screen -->
-              <div v-if="!gameActive && !gameStarted" class="game-overlay">
+              </div>              <!-- Game Selection Screen -->
+              <div v-if="showGameSelection" class="game-overlay">
+                <div class="game-selection">
+                  <h4>SELECT GAME</h4>                  <div class="game-options">                    <button @click="startSpecificGame('pong')" class="game-option-btn">
+                      <span class="game-icon">🏓</span>
+                      <span>PONG</span>
+                    </button>
+                    <button @click="startSpecificGame('snake')" class="game-option-btn">
+                      <span class="game-icon">🐍</span>
+                      <span>SNAKE</span>
+                    </button>
+                  </div>
+                  <button @click="closeGameSelection" class="game-btn cancel">BACK</button>
+                </div>
+              </div>              <!-- Start Screen -->
+              <div v-if="!gameActive && !gameStarted && !showGameSelection" class="game-overlay">
                 <div class="start-screen">
-                  <h4>CLASSIC PONG</h4>
-                  <p v-if="!isMobile">USE ↑ ↓ TO MOVE PADDLE</p>
-                  <p v-if="isMobile">USE TOUCH BUTTONS TO MOVE</p>
-                  <p>FIRST TO 5 POINTS WINS</p>
-                  <button @click="startGame" class="game-btn">START GAME</button>
+                  <h4>{{ currentGameTitle.map(c => c.letter).join('') }}</h4>                  <p v-if="currentGame === 'pong' && !isMobile">USE ↑ ↓ TO MOVE PADDLE</p>
+                  <p v-if="currentGame === 'pong' && isMobile">USE TOUCH BUTTONS TO MOVE</p>
+                  <p v-if="currentGame === 'snake'">USE ARROW KEYS TO MOVE</p>
+                  <p>{{ getGameDescription() }}</p>
+                  <button @click="startCurrentGame" class="game-btn">START {{ currentGame.toUpperCase() }}</button>
                 </div>
               </div>
             </div>
@@ -140,17 +211,22 @@
 <script>
 export default {
   name: 'HeroSection',  data() {
-    return {
+    return {      // Game System
+      currentGame: 'pong', // pong, snake
+      availableGames: ['pong', 'snake'],
+      showGameSelection: false,
+      currentGameTitle: [],
+      
+      // Game State
       gameActive: false,
       gameStarted: false,
       gamePaused: false,
       gameWinner: null,
       playerScore: 0,
       cpuScore: 0,
-      gameSpeed: 1,
-        // Game board dimensions
-      boardWidth: 400,
-      boardHeight: 350,
+      gameSpeed: 1,      // Game board dimensions - Strict pixel dimensions for retro feel
+      boardWidth: 480,  // Larger retro game width
+      boardHeight: 360, // Larger retro game height
       
       // Player paddle
       playerPaddle: {
@@ -167,8 +243,7 @@ export default {
         height: 50,
         speed: 2.5
       },
-      
-      // Ball
+        // Ball (Pong)
       ball: {
         x: 200,
         y: 125,
@@ -177,7 +252,19 @@ export default {
         speedX: 3,
         speedY: 2
       },
-        // Game mechanics
+        // Snake Game Data
+      snake: {
+        body: [{ x: 10, y: 10 }],
+        direction: { x: 0, y: 0 },        nextDirection: { x: 0, y: 0 },
+        food: { x: 15, y: 15 },
+        gridSize: 20,
+        frameCount: 0,
+        gameSpeed: 8 // Lower = faster (frames between moves)
+      },
+      
+      // Tetris Game Data - REMOVED
+      
+      // Game mechanics
       keys: {},
       gameInterval: null,
       
@@ -185,16 +272,21 @@ export default {
       isMobile: false,
       touchControls: {
         up: false,
-        down: false
+        down: false,
+        left: false,
+        right: false,
+        shoot: false
       },
       
       // Game settings
       maxScore: 5,
-      ballSpeedIncrease: 0.2,
-      observer: null
+      ballSpeedIncrease: 0.2,      observer: null
     }
-  },  mounted() {
+  },
+  
+  mounted() {
     this.detectMobile()
+    this.initializeGameTitle()
     this.setupKeyboardListeners()
     this.initScrollAnimations()
     
@@ -203,13 +295,16 @@ export default {
       this.updateBoardDimensions()
     })
   },
-    beforeUnmount() {
+  
+  beforeUnmount() {
     this.cleanup()
     if (this.observer) {
       this.observer.disconnect()
     }
   },
-    methods: {    detectMobile() {
+  
+  methods: {
+    detectMobile() {
       this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
                       window.innerWidth <= 768
     },
@@ -227,8 +322,114 @@ export default {
         // Reset ball position
         this.ball.x = this.boardWidth / 2
         this.ball.y = this.boardHeight / 2
+      }    },
+
+    // Game System Methods
+    initializeGameTitle() {
+      const gameNames = {
+        pong: 'PONG GAME',
+        snake: 'SNAKE GAME'
       }
+      
+      const title = gameNames[this.currentGame] || 'ARCADE GAME'
+      this.currentGameTitle = title.split('').map((letter, index) => ({
+        id: index,
+        letter: letter
+      }))
     },
+
+    startRandomGame() {
+      const randomIndex = Math.floor(Math.random() * this.availableGames.length)
+      this.currentGame = this.availableGames[randomIndex]
+      this.initializeGameTitle()
+      this.startCurrentGame()
+    },
+
+    selectGame() {
+      this.showGameSelection = true
+    },
+
+    closeGameSelection() {
+      this.showGameSelection = false
+    },    startSpecificGame(gameType) {
+      this.currentGame = gameType
+      this.initializeGameTitle()
+      this.showGameSelection = false
+      this.startCurrentGame()
+    },
+
+    startCurrentGame() {
+      this.updateBoardDimensions()
+      this.resetCurrentGame()
+      this.gameActive = true
+      this.gameStarted = true
+      this.gamePaused = false
+      this.gameWinner = null
+      this.gameLoop()
+    },    getGameDescription() {      const descriptions = {
+        pong: 'FIRST TO 5 POINTS WINS',
+        snake: 'EAT FOOD TO GROW LONGER'
+      }
+      return descriptions[this.currentGame] || 'ENJOY THE GAME'
+    },
+
+    resetCurrentGame() {
+      this.playerScore = 0
+      this.cpuScore = 0
+      this.gameSpeed = 1
+      this.gameWinner = null
+      
+      switch(this.currentGame) {
+        case 'pong':
+          this.resetPongGame()
+          break
+        case 'snake':
+          this.resetSnakeGame()
+          break
+      }
+      
+      this.keys = {}
+    },    // Pong Game Methods
+    resetPongGame() {
+      this.playerPaddle.y = (this.boardHeight - this.playerPaddle.height) / 2
+      this.cpuPaddle.y = (this.boardHeight - this.cpuPaddle.height) / 2
+      this.ball.x = this.boardWidth / 2
+      this.ball.y = this.boardHeight / 2
+      this.ball.speedX = Math.random() > 0.5 ? 3 : -3
+      this.ball.speedY = Math.random() * 4 - 2
+    },    // Snake Game Methods
+    resetSnakeGame() {
+      // Start snake in the center
+      const centerX = Math.floor((this.boardWidth / this.snake.gridSize) / 2) * this.snake.gridSize
+      const centerY = Math.floor((this.boardHeight / this.snake.gridSize) / 2) * this.snake.gridSize
+      
+      this.snake.body = [
+        { x: centerX, y: centerY },
+        { x: centerX - this.snake.gridSize, y: centerY },
+        { x: centerX - (this.snake.gridSize * 2), y: centerY }
+      ]
+      this.snake.direction = { x: 0, y: 0 } // Start stationary
+      this.snake.nextDirection = { x: 0, y: 0 }
+      this.snake.frameCount = 0
+      this.snake.gameSpeed = 8
+      this.generateSnakeFood()
+    },generateSnakeFood() {
+      let newFood
+      let foodOnSnake = true
+      
+      // Keep generating food until it's not on the snake
+      while (foodOnSnake) {
+        newFood = {
+          x: Math.floor(Math.random() * Math.floor(this.boardWidth / this.snake.gridSize)) * this.snake.gridSize,
+          y: Math.floor(Math.random() * Math.floor(this.boardHeight / this.snake.gridSize)) * this.snake.gridSize
+        }
+        
+        foodOnSnake = this.snake.body.some(segment => 
+          segment.x === newFood.x && segment.y === newFood.y
+        )
+      }
+      
+      this.snake.food = newFood    },    // Tetris Game Methods - REMOVED
 
     handleTouchStart(direction) {
       if (!this.gameActive || this.gamePaused) return
@@ -314,16 +515,32 @@ export default {
       this.ball.speedY = Math.random() * 4 - 2
       
       this.keys = {}
-    },      updatePlayerPaddle() {
-      // Handle keyboard controls
-      const upPressed = this.keys['ArrowUp'] || this.touchControls.up
-      const downPressed = this.keys['ArrowDown'] || this.touchControls.down
-      
-      if (upPressed && this.playerPaddle.y > 0) {
-        this.playerPaddle.y -= this.playerPaddle.speed
-      }
-      if (downPressed && this.playerPaddle.y < this.boardHeight - this.playerPaddle.height) {
-        this.playerPaddle.y += this.playerPaddle.speed
+    },    updatePlayerPaddle() {
+      if (this.currentGame === 'pong') {
+        // Handle keyboard and touch controls for Pong
+        const upPressed = this.keys['ArrowUp'] || this.touchControls.up
+        const downPressed = this.keys['ArrowDown'] || this.touchControls.down
+        
+        if (upPressed && this.playerPaddle.y > 0) {
+          this.playerPaddle.y -= this.playerPaddle.speed
+        }
+        if (downPressed && this.playerPaddle.y < this.boardHeight - this.playerPaddle.height) {
+          this.playerPaddle.y += this.playerPaddle.speed
+        }
+      } else if (this.currentGame === 'snake') {
+        // Handle touch controls for Snake
+        if (this.touchControls.up && this.snake.direction.y !== this.snake.gridSize) {
+          this.snake.nextDirection = { x: 0, y: -this.snake.gridSize }
+        }
+        if (this.touchControls.down && this.snake.direction.y !== -this.snake.gridSize) {
+          this.snake.nextDirection = { x: 0, y: this.snake.gridSize }
+        }
+        if (this.touchControls.left && this.snake.direction.x !== this.snake.gridSize) {
+          this.snake.nextDirection = { x: -this.snake.gridSize, y: 0 }
+        }
+        if (this.touchControls.right && this.snake.direction.x !== -this.snake.gridSize) {
+          this.snake.nextDirection = { x: this.snake.gridSize, y: 0 }
+        }
       }
     },
 
@@ -374,19 +591,30 @@ export default {
       if (Math.abs(this.ball.speedX) < 5) {
         this.ball.speedX *= 1.05
       }
-    },
-      gameLoop() {
+    },    gameLoop() {
       if (!this.gameActive || this.gamePaused) return
       
+      switch(this.currentGame) {
+        case 'pong':
+          this.updatePongGame()
+          break
+        case 'snake':
+          this.updateSnakeGame()
+          break
+      }
+      
+      requestAnimationFrame(this.gameLoop)
+    },
+
+    // Updated Pong Game Logic
+    updatePongGame() {
       this.updatePlayerPaddle()
       this.updateCpuPaddle()
       this.updateBall()
-      this.checkCollisions()
-      this.checkGameConditions()
-      
-      requestAnimationFrame(this.gameLoop)
-    },    
-    checkCollisions() {
+      this.checkPongCollisions()
+      this.checkPongGameConditions()
+    },
+    checkPongCollisions() {
       // Ball collision with player paddle
       if (this.ball.x <= 30 && 
           this.ball.x >= 20 &&
@@ -410,15 +638,75 @@ export default {
         const hitPos = (this.ball.y - this.cpuPaddle.y) / this.cpuPaddle.height
         this.ball.speedY = (hitPos - 0.5) * 6
       }
-    },
-
-    checkGameConditions() {
+    },    checkPongGameConditions() {
       if (this.playerScore >= this.maxScore) {
         this.endGame('Player')
       } else if (this.cpuScore >= this.maxScore) {
         this.endGame('CPU')
       }
-    },
+    },    // Snake Game Logic
+    updateSnakeGame() {
+      // Handle snake direction changes (prevent immediate reversal)
+      if (this.keys['ArrowUp'] && this.snake.direction.y !== this.snake.gridSize) {
+        this.snake.nextDirection = { x: 0, y: -this.snake.gridSize }
+      } else if (this.keys['ArrowDown'] && this.snake.direction.y !== -this.snake.gridSize) {
+        this.snake.nextDirection = { x: 0, y: this.snake.gridSize }
+      } else if (this.keys['ArrowLeft'] && this.snake.direction.x !== this.snake.gridSize) {
+        this.snake.nextDirection = { x: -this.snake.gridSize, y: 0 }
+      } else if (this.keys['ArrowRight'] && this.snake.direction.x !== -this.snake.gridSize) {
+        this.snake.nextDirection = { x: this.snake.gridSize, y: 0 }
+      }
+      
+      // Increment frame counter
+      this.snake.frameCount++
+      
+      // Only move snake every X frames (controls game speed)
+      if (this.snake.frameCount < this.snake.gameSpeed) {
+        return
+      }
+      
+      this.snake.frameCount = 0
+      
+      // Only move if there's a direction set (snake starts stationary)
+      if (this.snake.nextDirection.x !== 0 || this.snake.nextDirection.y !== 0) {
+        this.snake.direction = this.snake.nextDirection
+        
+        // Calculate new head position
+        const head = { ...this.snake.body[0] }
+        head.x += this.snake.direction.x
+        head.y += this.snake.direction.y
+        
+        // Check wall collision
+        if (head.x < 0 || head.x >= this.boardWidth || head.y < 0 || head.y >= this.boardHeight) {
+          this.endGame('Game Over')
+          return
+        }
+        
+        // Check self collision
+        for (let segment of this.snake.body) {
+          if (head.x === segment.x && head.y === segment.y) {
+            this.endGame('Game Over')
+            return
+          }
+        }
+        
+        // Add new head
+        this.snake.body.unshift(head)
+        
+        // Check food collision
+        if (head.x === this.snake.food.x && head.y === this.snake.food.y) {
+          this.playerScore += 10
+          this.generateSnakeFood()
+          // Speed up slightly
+          if (this.snake.gameSpeed > 3) {
+            this.snake.gameSpeed -= 0.2
+          }
+          // Don't remove tail (snake grows)
+        } else {
+          // Remove tail (snake moves)
+          this.snake.body.pop()
+        }
+      }    },    // Tetris Game Logic - REMOVED
 
     endGame(winner) {
       this.gameActive = false
@@ -728,6 +1016,17 @@ export default {
   color: #fff;
 }
 
+.game-btn.secondary {
+  background: transparent;
+  border-color: #0f0;
+  color: #0f0;
+}
+
+.game-btn.secondary:hover {
+  background: #0f0;
+  color: #000;
+}
+
 .game-stats {
   display: flex;
   justify-content: space-between;
@@ -757,8 +1056,9 @@ export default {
 }
 
 .game-board {
-  width: 100%;
-  height: 350px;
+  width: 480px;   /* Larger pixel width - better fills the space */
+  height: 360px;  /* Larger pixel height - better fills the space */
+  max-width: 90vw; /* Ensure it doesn't overflow on very small screens */
   background: 
     linear-gradient(90deg, #001122 0%, #002244 100%),
     radial-gradient(circle at 20% 20%, #003366 0%, transparent 50%),
@@ -771,6 +1071,7 @@ export default {
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   transition: all 0.3s ease;
+  margin: 0 auto; /* Center the game board */
 }
 
 .game-board:hover {
@@ -838,11 +1139,31 @@ export default {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 10;
+}
+
+/* Pong controls - vertical layout */
+.mobile-controls:not(.snake-controls) {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  z-index: 10;
 }
+
+/* Snake controls - cross layout */
+.mobile-controls.snake-controls {
+  display: grid;
+  grid-template-areas: 
+    ". up ."
+    "left down right";
+  gap: 5px;
+  width: 120px;
+  height: 80px;
+}
+
+.snake-controls .touch-up { grid-area: up; }
+.snake-controls .touch-down { grid-area: down; }
+.snake-controls .touch-left { grid-area: left; }
+.snake-controls .touch-right { grid-area: right; }
 
 .touch-btn {
   width: 40px;
@@ -869,6 +1190,43 @@ export default {
 .touch-btn:hover {
   background: rgba(255, 255, 255, 0.2);
 }
+
+/* Snake Game Styles - Classic Arcade Look */
+.snake-segment {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+}
+
+.snake-head {
+  background: #fff !important;
+  border: 2px solid #000 !important;
+  box-shadow: 
+    0 0 0 1px #fff,
+    0 0 8px rgba(255, 255, 255, 0.8);
+}
+
+.snake-food {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border: 1px solid #000;
+  box-sizing: border-box;
+  
+  /* Classic blinking food effect */
+  animation: snakeFood 1s infinite;
+}
+
+@keyframes snakeFood {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+/* Tetris Game Styles - REMOVED */
 
 .center-line {
   position: absolute;
@@ -905,19 +1263,79 @@ export default {
 
 .game-over,
 .start-screen,
-.pause-screen {
+.pause-screen,
+.game-selection {
   text-align: center;
   color: #fff;
 }
 
 .game-over h4,
 .start-screen h4,
-.pause-screen h4 {
+.pause-screen h4,
+.game-selection h4 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   color: #0f0;
   text-shadow: 0 0 10px #0f0;
   font-family: 'Press Start 2P', 'Space Mono', monospace;
+}
+
+/* Game Selection Styles */
+.game-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 2rem 0;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-option-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 2px solid #fff;
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  min-height: 80px;
+}
+
+.game-option-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: #0f0;
+  color: #0f0;
+  transform: scale(1.05);
+}
+
+.game-option-btn .game-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  display: block;
+  color: #fff;
+  transition: color 0.3s ease;
+  line-height: 1;
+}
+
+.game-option-btn .game-icon i {
+  font-style: normal;
+  display: inline-block;
+}
+
+.game-option-btn:hover .game-icon {
+  color: #0f0;
+}
+
+.game-option-btn span:last-child {
+  font-size: 0.7rem;
+  letter-spacing: 1px;
 }
 
 .game-over p,
@@ -1053,9 +1471,9 @@ export default {
   
   .game-container {
     margin-top: 1rem;
-  }
-    .game-board {
-    height: 180px;
+  }  .game-board {
+    width: 320px;  /* Smaller for very small screens but still pixel-perfect */
+    height: 240px; /* Maintains 4:3 aspect ratio */
   }
   
   .game-header {

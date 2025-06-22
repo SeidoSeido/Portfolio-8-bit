@@ -172,13 +172,9 @@ export default {
 </script>
 
 <style scoped>
-/* 8-bit Skills Section */
+/* Skills Section */
 .skills {
-  background: 
-    radial-gradient(circle at 20% 80%, #001122 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, #000811 0%, transparent 50%),
-    radial-gradient(circle at 40% 40%, #110000 0%, transparent 50%),
-    #000;
+  background: #000;
   border-bottom: 1px solid #fff;
   position: relative;
 }
@@ -331,7 +327,7 @@ export default {
   gap: 1.5rem;
 }
 
-/* 8-bit Skill Items */
+/* Skill Items */
 .skill-item {
   display: flex;
   align-items: center;
@@ -341,23 +337,6 @@ export default {
   border: 2px solid #fff;
   transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
-}
-
-.skill-item::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    45deg,
-    transparent,
-    transparent 3px,
-    rgba(255, 255, 255, 0.03) 3px,
-    rgba(255, 255, 255, 0.03) 6px
-  );
 }
 
 .skill-item:hover {
@@ -368,7 +347,7 @@ export default {
     0 0 20px rgba(255, 255, 255, 0.2);
 }
 
-/* 8-bit Skill Icon */
+/* Skill Icon */
 .skill-icon {
   font-size: 1.5rem;
   width: 40px;
@@ -379,8 +358,6 @@ export default {
   background: #000;
   border: 2px solid #fff;
   color: #fff;
-  position: relative;
-  z-index: 1;
 }
 
 .skill-info {

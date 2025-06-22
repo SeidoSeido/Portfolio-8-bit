@@ -324,18 +324,58 @@ export default {
 .projects {
   background: #000;
   border-bottom: 1px solid #fff;
+  position: relative;
+  overflow: hidden;
 }
 
-/* 8-bit Projects Section */
-.projects {
-  background: 
-    linear-gradient(135deg, #001 25%, #112 25%),
-    linear-gradient(-135deg, #001 25%, #112 25%),
-    linear-gradient(135deg, #112 75%, #001 75%),
-    linear-gradient(-135deg, #112 75%, #001 75%);
-  background-size: 30px 30px;
-  background-position: 0 0, 0 15px, 15px -15px, -15px 0px;
-  border-bottom: 1px solid #fff;
+/* Enhanced Moving Horizontal Scanlines Only */
+.projects::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.08) 3px,
+    rgba(255, 255, 255, 0.08) 6px
+  );
+  animation: movingLines 3s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Secondary Layer - Only Horizontal Lines */
+.projects::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.04) 8px,
+    rgba(255, 255, 255, 0.04) 12px
+  );
+  animation: movingLinesSecondary 4s linear infinite reverse;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes movingLines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(6px); }
+}
+
+@keyframes movingLinesSecondary {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(12px); }
 }
 
 .section-header {
@@ -998,5 +1038,11 @@ export default {
     transform: scale(1.1);
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
   }
+}
+
+/* Content positioning above scanlines */
+.projects .container {
+  position: relative;
+  z-index: 1;
 }
 </style>

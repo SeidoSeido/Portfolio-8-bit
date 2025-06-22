@@ -46,13 +46,44 @@
               <div class="stat-label">Cups of Coffee</div>
             </div>
           </div>
-        </div>
-        
-        <div class="about-image">
-          <div class="image-placeholder">
-            <div class="code-animation">
-              <div class="code-line" v-for="(line, index) in codeLines" :key="index" :style="{ animationDelay: index * 0.2 + 's' }">
-                {{ line }}
+        </div>        <div class="about-image">
+          <div class="retro-display" ref="retroDisplay">
+            <!-- Simple Retro Screen -->
+            <div class="retro-screen">
+              <div class="screen-header">
+                <div class="screen-title">DEVELOPER.EXE</div>
+                <div class="screen-status">●●●</div>
+              </div>
+              
+              <!-- Simple Retro Content -->
+              <div class="screen-content">
+                <div class="profile-section">
+                  <div class="profile-line">
+                    <span class="label">NAME:</span>
+                    <span class="value">SIR LAUDATO</span>
+                  </div>
+                  <div class="profile-line">
+                    <span class="label">ROLE:</span>
+                    <span class="value">FRONTEND DEV</span>
+                  </div>
+                  <div class="profile-line">
+                    <span class="label">STATUS:</span>
+                    <span class="value blinking">CODING...</span>
+                  </div>
+                </div>
+                
+                <!-- Simple Tech Stack Display -->
+                <div class="tech-section">
+                  <div class="section-label">TECH STACK:</div>
+                  <div class="tech-grid">                    <div class="tech-item" v-for="tech in techStack" :key="tech.name">
+                      <div class="tech-icon">
+                        <i :class="tech.icon"></i>
+                        <span class="icon-fallback" v-if="!tech.icon">{{ tech.fallback }}</span>
+                      </div>
+                      <span>{{ tech.name }}</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -64,29 +95,25 @@
 
 <script>
 export default {
-  name: 'AboutSection',
-  data() {
+  name: 'AboutSection',  data() {
     return {
-      observer: null,      codeLines: [
-        "const dev = {",
-        "  name: 'Sir Laudato',",
-        "  role: 'Frontend Dev',",
-        "  skills: ['Vue', 'React'],",
-        "  passion: 'Amazing UX',",
-        "  coffee: '☕'.repeat(∞)",
-        "};"
+      observer: null,      techStack: [
+        { name: 'VUE', icon: 'pixelart-icons-font-zap', fallback: '⚡' },
+        { name: 'REACT', icon: 'pixelart-icons-font-settings', fallback: '⚛️' },
+        { name: 'JS', icon: 'pixelart-icons-font-code', fallback: '💻' },
+        { name: 'CSS', icon: 'pixelart-icons-font-paint-bucket', fallback: '🎨' },
+        { name: 'NODE', icon: 'pixelart-icons-font-server', fallback: '🖥️' },
+        { name: 'GIT', icon: 'pixelart-icons-font-git-branch', fallback: '📦' }
       ]
     }
-  },
-  mounted() {
+  },  mounted() {
     this.initScrollAnimations()
   },
   beforeUnmount() {
     if (this.observer) {
       this.observer.disconnect()
     }
-  },
-  methods: {
+  },  methods: {
     initScrollAnimations() {
       this.observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
@@ -115,7 +142,8 @@ export default {
         this.$refs.sectionHeader,
         this.$refs.textBlock1,
         this.$refs.textBlock2,
-        this.$refs.statsGrid
+        this.$refs.statsGrid,
+        this.$refs.retroDisplay
       ]
 
       elementsToObserve.forEach(el => {
@@ -129,7 +157,7 @@ export default {
 </script>
 
 <style scoped>
-/* 8-bit About Section */
+/* About Section with Moving Lines Background */
 .about {
   background: #000;
   color: #fff;
@@ -138,7 +166,7 @@ export default {
   overflow: hidden;
 }
 
-/* Enhanced 8-bit Screen Effect - More Visible Scanlines */
+/* Enhanced Moving Horizontal Scanlines Only */
 .about::before {
   content: '';
   position: absolute;
@@ -146,19 +174,19 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0;
   background: repeating-linear-gradient(
     0deg,
-    transparent 0px,
-    transparent 2px,
-    rgba(0, 255, 0, 0.15) 2px,
-    rgba(0, 255, 0, 0.15) 4px
+    transparent,
+    transparent 3px,
+    rgba(255, 255, 255, 0.08) 3px,
+    rgba(255, 255, 255, 0.08) 6px
   );
-  animation: screenFlicker 4s linear infinite;
-  opacity: 1;
+  animation: movingLines 3s linear infinite;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Enhanced 8-bit Screen Effect - More Visible Pixel Grid */
+/* Secondary Layer - Only Horizontal Lines */
 .about::after {
   content: '';
   position: absolute;
@@ -166,147 +194,29 @@ export default {
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 0;
-  background: 
-    radial-gradient(circle at 50% 50%, rgba(0, 255, 0, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, transparent 95%, rgba(0, 255, 0, 0.2) 100%),
-    linear-gradient(0deg, transparent 95%, rgba(0, 255, 0, 0.2) 100%),
-    /* Add some retro patterns */
-    repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 8px,
-      rgba(255, 255, 255, 0.02) 8px,
-      rgba(255, 255, 255, 0.02) 16px
-    );
-  background-size: 
-    12px 12px,
-    3px 3px,
-    3px 3px,
-    32px 32px;
-  animation: pixelShift 6s ease-in-out infinite;
-  opacity: 1;
-}
-
-/* Enhanced Screen Animations */
-@keyframes screenFlicker {
-  0%, 90%, 100% { 
-    opacity: 1; 
-    filter: brightness(1);
-  }
-  5% { 
-    opacity: 0.8; 
-    filter: brightness(1.2);
-  }
-  95% { 
-    opacity: 0.9; 
-    filter: brightness(0.8);
-  }
-  97% { 
-    opacity: 1.1; 
-    filter: brightness(1.3);
-  }
-}
-
-@keyframes pixelShift {
-  0%, 100% { 
-    transform: translateX(0px) translateY(0px);
-    opacity: 1;
-    filter: hue-rotate(0deg);
-  }
-  25% { 
-    transform: translateX(2px) translateY(0px);
-    opacity: 0.8;
-    filter: hue-rotate(90deg);
-  }
-  50% { 
-    transform: translateX(0px) translateY(2px);
-    opacity: 1.2;
-    filter: hue-rotate(180deg);
-  }
-  75% { 
-    transform: translateX(-2px) translateY(0px);
-    opacity: 0.9;
-    filter: hue-rotate(270deg);
-  }
-}
-
-/* Enhanced CRT Screen Curvature Effect */
-.about .container::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 0;
-  background: 
-    radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.3) 100%),
-    /* Add some subtle noise */
-    repeating-conic-gradient(from 0deg at 50% 50%, 
-      transparent 0deg, 
-      rgba(255, 255, 255, 0.01) 1deg, 
-      transparent 2deg
-    );
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.04) 8px,
+    rgba(255, 255, 255, 0.04) 12px
+  );
+  animation: movingLinesSecondary 4s linear infinite reverse;
   pointer-events: none;
-  animation: crtGlow 3s ease-in-out infinite alternate;
-}
-
-@keyframes crtGlow {
-  0% { 
-    filter: brightness(1) contrast(1); 
-  }
-  100% { 
-    filter: brightness(1.05) contrast(1.1); 
-  }
-}
-
-/* Enhanced RGB Chromatic Aberration */
-.about .container::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
   z-index: 0;
-  background: 
-    linear-gradient(90deg, 
-      rgba(255, 0, 0, 0.08) 0%,
-      transparent 2%,
-      transparent 98%,
-      rgba(0, 0, 255, 0.08) 100%
-    ),
-    /* Add vertical color bands */
-    linear-gradient(0deg,
-      rgba(0, 255, 0, 0.04) 0%,
-      transparent 3%,
-      transparent 97%,
-      rgba(255, 0, 255, 0.04) 100%
-    );
-  animation: chromaticShift 8s ease-in-out infinite;
-  pointer-events: none;
-  mix-blend-mode: overlay;
 }
 
-@keyframes chromaticShift {
-  0%, 100% { 
-    transform: translateX(0px) translateY(0px);
-    filter: hue-rotate(0deg);
-  }
-  25% { 
-    transform: translateX(1px) translateY(0px);
-    filter: hue-rotate(90deg);
-  }
-  50% { 
-    transform: translateX(0px) translateY(1px);
-    filter: hue-rotate(180deg);
-  }
-  75% { 
-    transform: translateX(-1px) translateY(0px);
-    filter: hue-rotate(270deg);
-  }
+@keyframes movingLines {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(6px); }
 }
+
+@keyframes movingLinesSecondary {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(12px); }
+}
+
+
 
 .section-header {
   text-align: center;
@@ -486,128 +396,179 @@ export default {
   position: relative;
 }
 
-.image-placeholder {
-  width: 100%;
-  height: 400px;
+/* Simple Retro Display */
+.retro-display {
+  max-width: 450px;
+  margin: 0 auto;
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s ease;
+}
+
+.retro-display.animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.retro-screen {
   background: #000;
+  border: 3px solid #fff;
+  padding: 0;
+  font-family: 'Space Mono', monospace;
+  box-shadow: 
+    0 0 20px rgba(255, 255, 255, 0.2),
+    inset 0 0 20px rgba(0, 255, 0, 0.1);
+  position: relative;
+}
+
+/* Simple scanline effect */
+.retro-screen::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.screen-header {
+  background: #333;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #fff;
+}
+
+.screen-title {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.screen-status {
+  color: #0f0;
+  font-size: 0.8rem;
+  letter-spacing: 2px;
+}
+
+.screen-content {
+  padding: 25px 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.profile-section {
+  margin-bottom: 30px;
+}
+
+.profile-line {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.label {
+  color: #ccc;
+  font-size: 0.85rem;
+  font-weight: 400;
+}
+
+.value {
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.blinking {
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+.tech-section {
+  margin-top: 25px;
+}
+
+.section-label {
+  color: #0f0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+  letter-spacing: 1px;
+}
+
+.tech-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.tech-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 8px;
+  border: 1px solid #666;
+  background: rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.tech-item:hover {
+  border-color: #0f0;
+  background: rgba(0, 255, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.tech-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
-  position: relative;
-  border: 3px solid #fff;
-  box-shadow: 
-    inset 0 0 20px rgba(0, 255, 0, 0.1),
-    0 0 20px rgba(255, 255, 255, 0.1);
-  /* Add retro screen effect */
-  background: 
-    repeating-linear-gradient(
-      0deg,
-      transparent 0px,
-      transparent 1px,
-      rgba(0, 255, 0, 0.03) 1px,
-      rgba(0, 255, 0, 0.03) 2px
-    ),
-    #000;
+  height: 24px;
+  margin-bottom: 8px;
 }
 
-.code-animation {
-  background: #000;
-  padding: 2rem 2.5rem 3rem 2rem;
-  font-family: 'Press Start 2P', 'Space Mono', monospace;
+.tech-item i {
+  font-size: 1.5rem;
+  color: #fff;
+  transition: color 0.3s ease;
+}
+
+.tech-item:hover i {
+  color: #0f0;
+}
+
+.icon-fallback {
+  font-size: 1.5rem;
+  display: block;
+}
+
+.tech-item span {  color: #ccc;
   font-size: 0.7rem;
-  color: #00ff00;
-  width: 90%;
-  border: 2px solid #00ff00;
-  position: relative;
-  line-height: 1.8;
-  text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  box-sizing: border-box;
-  /* Add terminal-like styling */
-  box-shadow: 
-    inset 0 0 10px rgba(0, 255, 0, 0.1),
-    0 0 15px rgba(0, 255, 0, 0.2);
-  animation: terminalGlow 3s ease-in-out infinite alternate;
-}
-
-/* Add blinking cursor */
-.code-animation::after {
-  content: '█';
-  color: #00ff00;
-  animation: blink 1s infinite;
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-}
-
-.code-line {
-  opacity: 0;
-  animation: typeIn 0.8s ease forwards;
-  margin-bottom: 0.8rem;
-  white-space: pre;
-  font-family: 'Press Start 2P', 'Space Mono', monospace;
-  text-shadow: 0 0 3px rgba(0, 255, 0, 0.7);
-  position: relative;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  max-width: 100%;
-}
-
-/* Enhanced syntax highlighting for 8-bit theme */
-.code-line:nth-child(1) { 
-  color: #00ff00; 
-  font-weight: bold;
-}
-.code-line:nth-child(2) { 
-  color: #ffff00; 
-  padding-left: 0.8rem; 
-  text-shadow: 0 0 3px rgba(255, 255, 0, 0.5);
-}
-.code-line:nth-child(3) { 
-  color: #ff00ff; 
-  padding-left: 0.8rem; 
-  text-shadow: 0 0 3px rgba(255, 0, 255, 0.5);
-}
-.code-line:nth-child(4) { 
-  color: #00ffff; 
-  padding-left: 0.8rem; 
-  text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
-}
-.code-line:nth-child(5) { 
-  color: #ff8800; 
-  padding-left: 0.8rem; 
-  text-shadow: 0 0 3px rgba(255, 136, 0, 0.5);
-}
-.code-line:nth-child(6) { 
-  color: #8800ff; 
-  padding-left: 0.8rem; 
-  text-shadow: 0 0 3px rgba(136, 0, 255, 0.5);
-}
-.code-line:nth-child(7) { 
-  color: #00ff00; 
-  font-weight: bold;
-}
-
-@keyframes typeIn {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-    filter: blur(2px);
-  }
-  50% {
-    filter: blur(1px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-    filter: blur(0px);
-  }
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 /* 8-bit Scroll Animations */
 .pixel-glitch-in {
-  opacity: 1; /* Changed from 0 to 1 to make title always visible */
-  transform: translateY(0); /* Changed from translateY(-20px) to 0 */
+  opacity: 1;
+  transform: translateY(0);
   transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
@@ -689,26 +650,6 @@ export default {
   100% { transform: scale(1); }
 }
 
-/* Enhanced hover effects */
-.text-block.animate:hover {
-  animation: pixelTextGlow 0.5s ease-in-out;
-}
-
-.pixel-stat-bounce.animate:hover {
-  animation: pixelStatWiggle 0.6s ease-in-out;
-}
-
-@keyframes pixelTextGlow {
-  0%, 100% { text-shadow: 0 0 5px rgba(255, 255, 255, 0.2); }
-  50% { text-shadow: 0 0 15px rgba(0, 255, 255, 0.4), 0 0 25px rgba(0, 255, 255, 0.2); }
-}
-
-@keyframes pixelStatWiggle {
-  0%, 100% { transform: rotate(0deg) scale(1); }
-  25% { transform: rotate(-2deg) scale(1.02); }
-  75% { transform: rotate(2deg) scale(1.02); }
-}
-
 @media (max-width: 768px) {
   .pixel-title {
     font-size: 2rem;
@@ -758,25 +699,42 @@ export default {
     line-height: 1.3;
   }
   
-  .image-placeholder {
-    height: 300px;
-    margin-top: 1rem;
+  .retro-screen {
+    border-width: 2px;
   }
   
-  .code-animation {
-    font-size: 0.55rem;
-    padding: 1.5rem 1.5rem 2rem 1.2rem;
-    line-height: 1.6;
-    width: 95%;
+  .screen-header {
+    padding: 10px 15px;
   }
   
-  .code-line {
-    margin-bottom: 0.6rem;
-    word-break: break-word;
+  .screen-title {
+    font-size: 0.8rem;
   }
   
-  .code-line:nth-child(n+2) {
-    padding-left: 0.6rem;
+  .screen-content {
+    padding: 20px 15px;
+  }
+  
+  .tech-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+    .tech-item {
+    padding: 10px 6px;
+  }
+  
+  .tech-icon {
+    height: 20px;
+    margin-bottom: 6px;
+  }
+  
+  .tech-item i,
+  .icon-fallback {
+    font-size: 1.2rem;
+  }
+  
+  .tech-item span:last-child {
+    font-size: 0.65rem;
   }
 }
 
@@ -817,48 +775,57 @@ export default {
     font-size: 0.65rem;
   }
   
-  .image-placeholder {
-    height: 250px;
+  .retro-screen {
+    border-width: 1px;
   }
   
-  .code-animation {
-    font-size: 0.5rem;
-    padding: 1.2rem 1rem 1.5rem 1rem;
-    line-height: 1.5;
-    width: 98%;
+  .screen-header {
+    padding: 8px 12px;
   }
   
-  .code-line {
-    margin-bottom: 0.5rem;
+  .screen-title {
+    font-size: 0.7rem;
   }
   
-  .code-line:nth-child(n+2) {
-    padding-left: 0.4rem;
+  .screen-content {
+    padding: 15px 12px;
+  }
+  
+  .profile-line {
+    margin-bottom: 10px;
+    padding: 6px 0;
+  }
+  
+  .label, .value {
+    font-size: 0.75rem;
+  }
+  
+  .tech-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+    .tech-item {
+    padding: 8px 4px;
+  }
+  
+  .tech-icon {
+    height: 18px;
+    margin-bottom: 6px;
+  }
+  
+  .tech-item i,
+  .icon-fallback {
+    font-size: 1rem;
+  }
+  
+  .tech-item span:last-child {
+    font-size: 0.6rem;
   }
 }
 
-/* Content positioning above Tetris blocks */
+/* Content positioning */
 .about .container {
   position: relative;
   z-index: 1;
-}
-
-/* Add 8-bit terminal animations */
-@keyframes terminalGlow {
-  0% { 
-    box-shadow: 
-      inset 0 0 10px rgba(0, 255, 0, 0.1),
-      0 0 15px rgba(0, 255, 0, 0.2);
-  }
-  100% { 
-    box-shadow: 
-      inset 0 0 15px rgba(0, 255, 0, 0.2),
-      0 0 25px rgba(0, 255, 0, 0.3);
-  }
-}
-
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
 }
 </style>
