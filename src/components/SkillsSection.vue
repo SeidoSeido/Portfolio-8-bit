@@ -477,20 +477,106 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .section-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    line-height: 1.3;
+  }
+  
   .skills-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .cert-grid {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
   
   .skills-category,
   .certifications {
     padding: 1.5rem;
   }
-    .category-title {
-    font-size: 1.5rem;
+  
+  .category-title {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+  }
+  
+  .skill-item {
+    margin-bottom: 1rem;
+  }
+  
+  .skill-name {
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .skill-level {
+    font-size: 0.6rem;
+  }
+  
+  .skill-bar {
+    height: 6px;
+  }
+  
+  .cert-item {
+    padding: 1rem;
+  }
+  
+  .cert-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .cert-org {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+  
+  .skills-grid,
+  .cert-grid {
+    gap: 1rem;
+  }
+  
+  .skills-category,
+  .certifications {
+    padding: 1.2rem;
+  }
+  
+  .category-title {
+    font-size: 1rem;
+  }
+  
+  .skill-name {
+    font-size: 0.65rem;
+  }
+  
+  .skill-level {
+    font-size: 0.55rem;
+  }
+  
+  .skill-bar {
+    height: 5px;
+  }
+  
+  .cert-item {
+    padding: 0.8rem;
+  }
+  
+  .cert-title {
+    font-size: 0.7rem;
+  }
+  
+  .cert-org {
+    font-size: 0.65rem;
   }
 }
 

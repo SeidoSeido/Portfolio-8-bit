@@ -844,42 +844,104 @@ export default {
 @media (max-width: 768px) {
   .hero-content {
     grid-template-columns: 1fr;
-    gap: 2rem;
+    gap: 1.5rem;
     text-align: center;
+    padding: 1rem;
   }
-    .hero-title {
-    font-size: 2.5rem;
+  
+  .hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+    margin-bottom: 1rem;
   }
   
   .name {
-    font-size: 2.8rem;
+    font-size: 2.2rem;
+    letter-spacing: -1px;
+    line-height: 1.1;
   }
   
   .title {
-    font-size: 1.2rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
   }
   
   .hero-description {
-    font-size: 1.1rem;
+    font-size: 0.9rem;
     max-width: none;
+    line-height: 1.5;
+    padding: 0 1rem;
   }
   
   .game-container {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
+    max-width: 100%;
   }
   
   .game-board {
-    height: 300px;
+    height: 250px;
+    max-width: 100%;
   }
   
   .game-header {
     flex-direction: column;
     gap: 0.5rem;
     align-items: stretch;
+    padding: 0.8rem;
+  }
+  
+  .game-title {
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
   }
   
   .game-controls {
     justify-content: center;
+    gap: 0.5rem;
+  }
+  
+  .game-controls span {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.8rem;
+  }
+  
+  .name {
+    font-size: 2rem;
+  }
+  
+  .title {
+    font-size: 0.8rem;
+  }
+  
+  .hero-description {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+  
+  .game-container {
+    margin-top: 1rem;
+  }
+  
+  .game-board {
+    height: 220px;
+  }
+  
+  .game-header {
+    padding: 0.6rem;
+  }
+  
+  .game-title {
+    font-size: 0.7rem;
+  }
+  
+  .game-controls span {
+    font-size: 0.6rem;
   }
 }
 

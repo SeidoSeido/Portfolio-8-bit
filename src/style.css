@@ -262,13 +262,95 @@ html {
   }
 }
 
-/* Responsive */
+/* Responsive Design */
 @media (max-width: 768px) {
+  body {
+    cursor: auto; /* Restore cursor on mobile */
+  }
+  
   .container {
     padding: 0 1rem;
+    max-width: 100%;
   }
   
   .section {
-    padding: 3rem 0;
+    padding: 3rem 0 2rem 0;
+  }
+  
+  .section-header {
+    margin-bottom: 2rem;
+  }
+  
+  /* Improve button sizes for touch */
+  .btn {
+    min-height: 44px; /* iOS minimum touch target */
+    touch-action: manipulation;
+  }
+  
+  /* Better tap targets */
+  a, button, .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+  
+  .container {
+    padding: 0 0.5rem;
+  }
+  
+  .section {
+    padding: 2rem 0 1.5rem 0;
+  }
+  
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Adjust global font sizes for very small screens */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.2;
+  }
+  
+  /* Prevent horizontal scrolling */
+  .container {
+    overflow-x: hidden;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .section {
+    padding: 2rem 0;
+  }
+  
+  /* Reduce heights for landscape mobile */
+  .hero-content {
+    min-height: auto;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  /* Remove hover effects on touch devices */
+  .btn:hover,
+  .project-card:hover,
+  .info-card:hover,
+  .social-icon:hover {
+    transform: none;
+  }
+  
+  /* Add active states for better touch feedback */
+  .btn:active {
+    transform: scale(0.95);
+  }
+  
+  .project-card:active,
+  .info-card:active {
+    transform: scale(0.98);
   }
 }

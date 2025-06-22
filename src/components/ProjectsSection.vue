@@ -691,20 +691,135 @@ export default {
 }
 
 @media (max-width: 768px) {
-  .projects-grid {
-    grid-template-columns: 1fr;
+  .section-title {
+    font-size: 2rem;
+    letter-spacing: 2px;
+    line-height: 1.3;
   }
   
   .projects-filter {
     gap: 0.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
   }
   
   .filter-btn {
     padding: 0.5rem 1rem;
+    font-size: 0.7rem;
+    min-width: auto;
+  }
+  
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .project-card {
+    margin-bottom: 0;
+  }
+  
+  .project-content {
+    padding: 1.5rem;
+  }
+  
+  .project-title {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
+  }
+  
+  .project-meta {
+    margin-bottom: 0.8rem;
+  }
+  
+  .project-year,
+  .project-role {
+    font-size: 0.6rem;
+  }
+  
+  .project-description {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+  }
+  
+  .project-tech {
+    gap: 0.3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .tech-tag {
+    padding: 0.2rem 0.5rem;
+    font-size: 0.6rem;
+  }
+  
+  .project-links {
+    gap: 0.8rem;
+  }
+  
+  .project-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
+  
+  .projects-filter {
+    gap: 0.3rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filter-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.65rem;
+  }
+  
+  .projects-grid {
+    gap: 1.2rem;
+  }
+  
+  .project-content {
+    padding: 1.2rem;
+  }
+  
+  .project-title {
     font-size: 0.9rem;
   }
-    .project-content {
-    padding: 1.5rem;
+  
+  .project-year,
+  .project-role {
+    font-size: 0.55rem;
+  }
+  
+  .project-description {
+    font-size: 0.85rem;
+    line-height: 1.4;
+  }
+  
+  .project-tech {
+    gap: 0.2rem;
+  }
+  
+  .tech-tag {
+    padding: 0.15rem 0.4rem;
+    font-size: 0.55rem;
+  }
+  
+  .project-links {
+    gap: 0.6rem;
+    flex-direction: column;
+  }
+  
+  .project-link {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.55rem;
+    text-align: center;
   }
 }
 

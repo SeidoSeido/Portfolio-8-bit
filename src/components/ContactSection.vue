@@ -960,11 +960,70 @@ export default {
   .section-title {
     font-size: 1.8rem;
     letter-spacing: 2px;
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+  
+  .section-description {
+    font-size: 0.9rem;
+    padding: 0 1rem;
+    line-height: 1.5;
   }
   
   .contact-content {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 0 1rem;
+  }
+  
+  .contact-info {
+    gap: 1.5rem;
+  }
+  
+  .info-card {
+    padding: 1.5rem;
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+  }
+  
+  .info-icon {
+    margin: 0 auto;
+  }
+  
+  .info-details h3 {
+    font-size: 0.7rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-details p {
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  
+  .info-link {
+    font-size: 0.8rem;
+  }
+  
+  .social-links {
+    padding: 1.5rem;
+  }
+  
+  .social-links h3 {
+    font-size: 0.7rem;
+    margin-bottom: 1rem;
+  }
+  
+  .social-icons {
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+  }
+  
+  .social-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
   }
   
   .form-row {
@@ -973,7 +1032,27 @@ export default {
   }
   
   .contact-form {
-    padding: 2rem;
+    padding: 2rem 1.5rem;
+  }
+  
+  .form-group {
+    margin-bottom: 1.2rem;
+  }
+  
+  .form-group label {
+    font-size: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+  
+  .btn-full {
+    font-size: 0.8rem;
+    padding: 0.8rem 1.5rem;
   }
   
   .footer-content {
@@ -981,18 +1060,89 @@ export default {
     gap: 1rem;
     text-align: center;
     font-size: 0.5rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title {
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+  }
+  
+  .section-description {
+    font-size: 0.85rem;
+    padding: 0 0.5rem;
+  }
+  
+  .contact-content {
+    padding: 0 0.5rem;
+    gap: 1.5rem;
+  }
+  
+  .info-card {
+    padding: 1.2rem;
+    gap: 0.8rem;
+  }
+  
+  .info-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+  
+  .info-details h3 {
+    font-size: 0.65rem;
+  }
+  
+  .info-details p {
+    font-size: 0.85rem;
+  }
+  
+  .info-link {
+    font-size: 0.75rem;
+  }
+  
+  .social-links {
+    padding: 1.2rem;
+  }
+  
+  .social-links h3 {
+    font-size: 0.65rem;
   }
   
   .social-icons {
-    flex-wrap: wrap;
+    gap: 0.6rem;
+  }
+  
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  
+  .contact-form {
+    padding: 1.5rem 1rem;
   }
   
   .form-group label {
-    font-size: 0.5rem;
+    font-size: 0.45rem;
+  }
+  
+  .form-group input,
+  .form-group textarea {
+    padding: 0.5rem 0.7rem;
+    font-size: 0.85rem;
   }
   
   .btn-full {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
+    padding: 0.7rem 1.2rem;
+  }
+  
+  .footer-content {
+    font-size: 0.45rem;
+    gap: 0.8rem;
   }
 }
 </style>
