@@ -55,19 +55,13 @@
               </a>
             </div>
           </div>
-        </div>
-          <div class="contact-form pixel-slide-left" ref="contactForm">
-          <form @submit.prevent="submitForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-            <input type="hidden" name="form-name" value="contact">
-            <p class="hidden">
-              <label>Don't fill this out if you're human: <input name="bot-field" /></label>
-            </p>
+        </div>        <div class="contact-form pixel-slide-left" ref="contactForm">
+          <form @submit.prevent="submitForm">
             <div class="form-row">
               <div class="form-group">
                 <label for="name">Full Name</label>                <input 
                   type="text" 
                   id="name" 
-                  name="name"
                   v-model="form.name"
                   :class="{ error: errors.name }"
                   placeholder="Your full name"
@@ -80,7 +74,6 @@
                 <label for="email">Email Address</label>                <input 
                   type="email" 
                   id="email" 
-                  name="email"
                   v-model="form.email"
                   :class="{ error: errors.email }"
                   placeholder="your.email@example.com"
@@ -94,7 +87,6 @@
               <label for="subject">Subject</label>              <input 
                 type="text" 
                 id="subject" 
-                name="subject"
                 v-model="form.subject"
                 :class="{ error: errors.subject }"
                 placeholder="What's this about?"
@@ -106,7 +98,6 @@
             <div class="form-group">
               <label for="message">Message</label>              <textarea 
                 id="message" 
-                name="message"
                 v-model="form.message"
                 :class="{ error: errors.message }"
                 placeholder="Tell me about your project..."
@@ -239,8 +230,7 @@ export default {
     isValidEmail(email) {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
-    },
-      async submitForm() {
+    },    async submitForm() {
       if (!this.validateForm()) {
         return
       }
@@ -249,22 +239,23 @@ export default {
       this.submitMessage = ''
       
       try {
-        // Create form data for Netlify
-        const formData = new FormData()
-        formData.append('form-name', 'contact')
-        formData.append('name', this.form.name)
-        formData.append('email', this.form.email)
-        formData.append('subject', this.form.subject)
-        formData.append('message', this.form.message)
-        
-        // Submit to Netlify
-        const response = await fetch('/', {
+        // Send email via Vercel API route
+        const response = await fetch('/api/contact', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(formData).toString()
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: this.form.name,
+            email: this.form.email,
+            subject: this.form.subject,
+            message: this.form.message
+          })
         })
         
-        if (response.ok) {
+        const data = await response.json()
+        
+        if (response.ok && data.success) {
           // Reset form
           this.form = {
             name: '',
@@ -273,21 +264,26 @@ export default {
             message: ''
           }
           
-          this.submitMessage = 'Thank you! Your message has been sent successfully.'
+          this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
           this.submitStatus = 'success'
           
-          // Clear success message after 5 seconds
+          // Clear success message after 7 seconds
           setTimeout(() => {
             this.submitMessage = ''
-          }, 5000)
+          }, 7000)
         } else {
-          throw new Error('Form submission failed')
+          throw new Error(data.message || 'Failed to send message')
         }
         
       } catch (error) {
         console.error('Form submission error:', error)
-        this.submitMessage = 'Oops! Something went wrong. Please try again.'
+        this.submitMessage = 'Oops! Something went wrong. Please try again later or email me directly at sirlaudato@gmail.com'
         this.submitStatus = 'error'
+        
+        // Clear error message after 8 seconds
+        setTimeout(() => {
+          this.submitMessage = ''
+        }, 8000)
       }
       
       this.isSubmitting = false
