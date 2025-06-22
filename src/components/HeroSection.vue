@@ -193,11 +193,15 @@ export default {
       ballSpeedIncrease: 0.2,
       observer: null
     }
-  },
-  mounted() {
+  },  mounted() {
     this.detectMobile()
     this.setupKeyboardListeners()
     this.initScrollAnimations()
+    
+    // Update board dimensions after DOM is rendered
+    this.$nextTick(() => {
+      this.updateBoardDimensions()
+    })
   },
     beforeUnmount() {
     this.cleanup()
@@ -205,10 +209,25 @@ export default {
       this.observer.disconnect()
     }
   },
-    methods: {
-    detectMobile() {
+    methods: {    detectMobile() {
       this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
                       window.innerWidth <= 768
+    },
+
+    updateBoardDimensions() {
+      if (this.$refs.gameBoard) {
+        const rect = this.$refs.gameBoard.getBoundingClientRect()
+        this.boardWidth = rect.width
+        this.boardHeight = rect.height
+        
+        // Reset paddle positions based on new dimensions
+        this.playerPaddle.y = (this.boardHeight - this.playerPaddle.height) / 2
+        this.cpuPaddle.y = (this.boardHeight - this.cpuPaddle.height) / 2
+        
+        // Reset ball position
+        this.ball.x = this.boardWidth / 2
+        this.ball.y = this.boardHeight / 2
+      }
     },
 
     handleTouchStart(direction) {
@@ -222,7 +241,10 @@ export default {
     },    setupKeyboardListeners() {
       window.addEventListener('keydown', this.handleKeyDown)
       window.addEventListener('keyup', this.handleKeyUp)
-      window.addEventListener('resize', this.detectMobile)
+      window.addEventListener('resize', () => {
+        this.detectMobile()
+        this.updateBoardDimensions()
+      })
     },
       initScrollAnimations() {
       // Add initial animation trigger for game container
@@ -251,8 +273,8 @@ export default {
       }
       
       this.keys[event.code] = false
-    },
-      startGame() {
+    },    startGame() {
+      this.updateBoardDimensions()
       this.resetGame()
       this.gameActive = true
       this.gameStarted = true
@@ -1032,9 +1054,8 @@ export default {
   .game-container {
     margin-top: 1rem;
   }
-  
-  .game-board {
-    height: 220px;
+    .game-board {
+    height: 180px;
   }
   
   .game-header {
