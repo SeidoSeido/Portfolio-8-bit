@@ -136,6 +136,9 @@
 <script>
 import emailjs from '@emailjs/browser'
 
+// Initialize EmailJS with your public key
+emailjs.init('DU6SLOF9WZeOzX1IL')
+
 export default {
   name: 'ContactSection',
   data() {
@@ -241,43 +244,46 @@ export default {
       this.submitMessage = ''
       
       try {
+        console.log('Attempting to send via EmailJS...')
         // Method 1: Try EmailJS first (works without server setup)
         await this.sendEmailWithEmailJS()
-        
+        console.log('EmailJS succeeded!')
       } catch (emailjsError) {
-        console.log('EmailJS failed, trying server API...', emailjsError)
+        console.error('EmailJS failed with error:', emailjsError)
         
-        try {
-          // Method 2: Fallback to server API
-          await this.sendEmailWithAPI()
-          
-        } catch (apiError) {
-          console.error('Both email methods failed:', { emailjsError, apiError })
-          this.submitMessage = 'Oops! Something went wrong. Please try again later or email me directly at sirlaudato@gmail.com'
-          this.submitStatus = 'error'
-          
-          setTimeout(() => {
-            this.submitMessage = ''
-          }, 8000)
-        }
+        // Fallback: Open user's email client
+        console.log('Falling back to email client...')
+        this.openEmailClient()
       }
       
       this.isSubmitting = false
     },    async sendEmailWithEmailJS() {
-      // Initialize EmailJS with your credentials
+      // EmailJS credentials
       const serviceID = 'service_g2hgemy'
-      const templateID = 'template_lelcbjt'
-      const publicKey = 'bvS05RCV3uO769JZPiQOx'
+      const templateID = 'template_0h73zkt'
 
+      // Template parameters that match your EmailJS template exactly
       const templateParams = {
         from_name: this.form.name,
         from_email: this.form.email,
-        title: this.form.subject, // Maps to {{title}} in your template
+        title: this.form.subject,
         message: this.form.message
       }
 
-      await emailjs.send(serviceID, templateID, templateParams, publicKey)
+      console.log('Sending email with params:', templateParams)
+      console.log('ServiceID:', serviceID, 'TemplateID:', templateID)
       
+      try {
+        // Send email (no need to pass public key since we initialized it)
+        const response = await emailjs.send(serviceID, templateID, templateParams)
+        console.log('EmailJS Success:', response)
+      } catch (error) {
+        console.error('EmailJS Error Details:', error)
+        console.error('Error status:', error.status)
+        console.error('Error text:', error.text)
+        throw error
+      }
+
       // Reset form on success
       this.form = {
         name: '',
@@ -295,7 +301,29 @@ export default {
     },
 
     async sendEmailWithAPI() {
-      // Send email via Vercel API route
+      // For development, just simulate success since API route isn't available
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        console.log('Development mode: Simulating API success')
+        
+        // Reset form
+        this.form = {
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        }
+        
+        this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
+        this.submitStatus = 'success'
+        
+        setTimeout(() => {
+          this.submitMessage = ''
+        }, 7000)
+        
+        return
+      }
+
+      // For production, try the actual API
       const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
@@ -322,13 +350,42 @@ export default {
         
         this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
         this.submitStatus = 'success'
-        
-        setTimeout(() => {
+          setTimeout(() => {
           this.submitMessage = ''
         }, 7000)
       } else {
         throw new Error(data.message || 'Failed to send message')
       }
+    },
+
+    openEmailClient() {
+      const subject = encodeURIComponent(`Portfolio Contact: ${this.form.subject}`)
+      const body = encodeURIComponent(
+        `Hello Sir Lawrence,\n\n` +
+        `Name: ${this.form.name}\n` +
+        `Email: ${this.form.email}\n\n` +
+        `Message:\n${this.form.message}\n\n` +
+        `---\nSent from your portfolio contact form`
+      )
+      
+      const mailtoLink = `mailto:sirlaudato@gmail.com?subject=${subject}&body=${body}`
+      window.open(mailtoLink)
+      
+      // Show success message
+      this.submitMessage = 'Your email client should open now. If it doesn\'t work, please email me directly at sirlaudato@gmail.com'
+      this.submitStatus = 'success'
+      
+      // Reset form
+      this.form = {
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      }
+      
+      setTimeout(() => {
+        this.submitMessage = ''
+      }, 7000)
     }
   }
 }
