@@ -1,0 +1,274 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Space Mono', monospace;
+  line-height: 1.6;
+  color: #fff;
+  overflow-x: hidden;
+  background-color: #000;
+  cursor: none; /* Hide default cursor for flashlight effect */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* 8-bit Pixelated Background Pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 25% 25%, #001122 0%, transparent 50%),
+    radial-gradient(circle at 75% 75%, #001122 0%, transparent 50%),
+    repeating-conic-gradient(from 0deg at 50% 50%, #000 0deg 90deg, #111 90deg 180deg);
+  opacity: 0.3;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* 8-bit Scanlines across entire site */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 0, 0.02) 2px,
+    rgba(0, 255, 0, 0.02) 4px
+  );
+  pointer-events: none;
+  z-index: 1000;
+  animation: scanlines 0.1s linear infinite;
+}
+
+@keyframes scanlines {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(4px); }
+}
+
+/* Custom cursor */
+* {
+  cursor: none !important;
+}
+
+/* Interactive elements get a subtle glow */
+.btn, 
+.project-card, 
+.skill-item, 
+.info-card,
+.cert-item,
+.stat-item,
+.game-btn {
+  transition: all 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Enhanced hover states with lighting */
+.btn:hover {
+  box-shadow: 
+    0 4px 8px rgba(255, 255, 255, 0.2),
+    0 0 20px rgba(255, 255, 255, 0.1);
+}
+
+/* Ambient lighting for sections */
+.section {
+  position: relative;
+}
+
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(255, 255, 255, 0.02) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.section:hover::before {
+  opacity: 1;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* 8-bit Utility Classes */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  position: relative;
+}
+
+.section {
+  padding: 5rem 0;
+  border-bottom: 2px solid #fff;
+  position: relative;
+}
+
+/* 8-bit Section Headers */
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #fff, transparent);
+}
+
+/* 8-bit Buttons */
+.btn {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  border: 2px solid #fff;
+  border-radius: 0; /* Remove rounded corners for 8-bit look */
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.1s ease; /* Faster transition for 8-bit feel */
+  cursor: pointer;
+  font-size: 1.1rem;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* 8-bit button pixel effect */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn-primary {
+  background: #000;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 
+    inset 0 0 0 2px #000,
+    inset 0 0 0 4px #fff,
+    0 4px 0 #666;
+}
+
+.btn-primary:hover {
+  background: #fff;
+  color: #000;
+  border: 2px solid #000;
+  transform: translateY(2px);
+  box-shadow: 
+    inset 0 0 0 2px #fff,
+    inset 0 0 0 4px #000,
+    0 2px 0 #666;
+  animation: buttonGlitch 0.5s ease-in-out;
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+  box-shadow: 
+    inset 0 0 0 2px transparent,
+    inset 0 0 0 4px #fff,
+    0 4px 0 #333;
+}
+
+.btn-secondary:hover {
+  background: #fff;
+  color: #000;
+  transform: translateY(2px);
+  box-shadow: 
+    inset 0 0 0 2px #fff,
+    inset 0 0 0 4px #000,
+    0 2px 0 #333;
+  animation: buttonGlitch 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.8s ease forwards;
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Button Glitch Effects */
+@keyframes buttonGlitch {
+  0%, 90%, 100% {
+    text-shadow: none;
+  }
+  10% {
+    text-shadow: 
+      -1px 0 #ff0080,
+      1px 0 #00ffff,
+      0 1px #ffff00;
+  }
+  20% {
+    text-shadow: 
+      1px 0 #00ff80,
+      -1px 0 #ff8000,
+      0 -1px #8000ff;
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .section {
+    padding: 3rem 0;
+  }
+}
