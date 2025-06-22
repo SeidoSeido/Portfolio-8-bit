@@ -56,15 +56,18 @@
             </div>
           </div>
         </div>
-        
-        <div class="contact-form pixel-slide-left" ref="contactForm">
-          <form @submit.prevent="submitForm">
+          <div class="contact-form pixel-slide-left" ref="contactForm">
+          <form @submit.prevent="submitForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+            <input type="hidden" name="form-name" value="contact">
+            <p class="hidden">
+              <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+            </p>
             <div class="form-row">
               <div class="form-group">
-                <label for="name">Full Name</label>
-                <input 
+                <label for="name">Full Name</label>                <input 
                   type="text" 
                   id="name" 
+                  name="name"
                   v-model="form.name"
                   :class="{ error: errors.name }"
                   placeholder="Your full name"
@@ -74,10 +77,10 @@
               </div>
               
               <div class="form-group">
-                <label for="email">Email Address</label>
-                <input 
+                <label for="email">Email Address</label>                <input 
                   type="email" 
                   id="email" 
+                  name="email"
                   v-model="form.email"
                   :class="{ error: errors.email }"
                   placeholder="your.email@example.com"
@@ -88,10 +91,10 @@
             </div>
             
             <div class="form-group">
-              <label for="subject">Subject</label>
-              <input 
+              <label for="subject">Subject</label>              <input 
                 type="text" 
                 id="subject" 
+                name="subject"
                 v-model="form.subject"
                 :class="{ error: errors.subject }"
                 placeholder="What's this about?"
@@ -101,9 +104,9 @@
             </div>
             
             <div class="form-group">
-              <label for="message">Message</label>
-              <textarea 
+              <label for="message">Message</label>              <textarea 
                 id="message" 
+                name="message"
                 v-model="form.message"
                 :class="{ error: errors.message }"
                 placeholder="Tell me about your project..."
@@ -237,8 +240,7 @@ export default {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
       return emailRegex.test(email)
     },
-    
-    async submitForm() {
+      async submitForm() {
       if (!this.validateForm()) {
         return
       }
@@ -247,26 +249,43 @@ export default {
       this.submitMessage = ''
       
       try {
-        // Simulate API call
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        // Create form data for Netlify
+        const formData = new FormData()
+        formData.append('form-name', 'contact')
+        formData.append('name', this.form.name)
+        formData.append('email', this.form.email)
+        formData.append('subject', this.form.subject)
+        formData.append('message', this.form.message)
         
-        // Reset form
-        this.form = {
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
+        // Submit to Netlify
+        const response = await fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData).toString()
+        })
+        
+        if (response.ok) {
+          // Reset form
+          this.form = {
+            name: '',
+            email: '',
+            subject: '',
+            message: ''
+          }
+          
+          this.submitMessage = 'Thank you! Your message has been sent successfully.'
+          this.submitStatus = 'success'
+          
+          // Clear success message after 5 seconds
+          setTimeout(() => {
+            this.submitMessage = ''
+          }, 5000)
+        } else {
+          throw new Error('Form submission failed')
         }
         
-        this.submitMessage = 'Thank you! Your message has been sent successfully.'
-        this.submitStatus = 'success'
-        
-        // Clear success message after 5 seconds
-        setTimeout(() => {
-          this.submitMessage = ''
-        }, 5000)
-        
       } catch (error) {
+        console.error('Form submission error:', error)
         this.submitMessage = 'Oops! Something went wrong. Please try again.'
         this.submitStatus = 'error'
       }
@@ -278,6 +297,11 @@ export default {
 </script>
 
 <style scoped>
+/* Hide honeypot field */
+.hidden {
+  display: none;
+}
+
 .contact {
   background: #000;
   color: #fff;
