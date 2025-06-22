@@ -10,14 +10,13 @@
       </div>
       
       <div class="about-content">
-        <div class="about-text">
-          <div class="text-block pixel-slide-up" ref="textBlock1">
+        <div class="about-text">          <div class="text-block pixel-slide-up" ref="textBlock1">
             <h3>Passionate Frontend Developer</h3>
             <p>
-              With over 5 years of experience in frontend development, I specialize in creating 
-              exceptional digital experiences that combine beautiful design with robust functionality. 
-              I'm passionate about staying up-to-date with the latest technologies and best practices 
-              in web development.
+              Aspiring Computer Science professional with a strong foundation in web and software development. Passionate
+              about leveraging technology to enhance user experiences, with experience in AI-driven curriculum evaluation
+              and e-commerce platforms. Skilled in problem-solving, interface design, and team collaboration, eager to
+              contribute technical expertise to innovative projects in a dynamic environment.
             </p>
           </div>
           

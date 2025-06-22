@@ -537,8 +537,10 @@ export default {
 
 @media (max-width: 480px) {
   .section-title {
-    font-size: 1.6rem;
-    letter-spacing: 1px;
+    font-size: 1.4rem;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    word-break: break-word;
   }
   
   .skills-grid,
@@ -574,9 +576,17 @@ export default {
   .cert-title {
     font-size: 0.7rem;
   }
-  
-  .cert-org {
+    .cert-org {
     font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .section-title {
+    font-size: 1.2rem;
+    letter-spacing: 0px;
+    line-height: 1.1;
+    word-break: break-word;
   }
 }
 

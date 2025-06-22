@@ -125,10 +125,9 @@ export default {
       playerScore: 0,
       cpuScore: 0,
       gameSpeed: 1,
-      
-      // Game board dimensions
+        // Game board dimensions
       boardWidth: 400,
-      boardHeight: 250,
+      boardHeight: 350,
       
       // Player paddle
       playerPaddle: {
@@ -842,6 +841,10 @@ export default {
 }
 
 @media (max-width: 768px) {
+  .hero {
+    padding-top: 80px; /* Add padding to account for fixed navigation */
+  }
+  
   .hero-content {
     grid-template-columns: 1fr;
     gap: 1.5rem;
@@ -866,12 +869,16 @@ export default {
     letter-spacing: 1px;
     margin-bottom: 1rem;
   }
-  
-  .hero-description {
+    .hero-description {
     font-size: 0.9rem;
     max-width: none;
     line-height: 1.5;
     padding: 0 1rem;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+    width: 100%;
   }
   
   .game-container {
@@ -907,6 +914,10 @@ export default {
 }
 
 @media (max-width: 480px) {
+  .hero {
+    padding-top: 85px; /* Slightly more padding for smaller screens */
+  }
+  
   .hero-title {
     font-size: 1.8rem;
   }
@@ -918,10 +929,14 @@ export default {
   .title {
     font-size: 0.8rem;
   }
-  
-  .hero-description {
+    .hero-description {
     font-size: 0.85rem;
     padding: 0 0.5rem;
+  }
+  
+  .hero-buttons {
+    justify-content: center;
+    width: 100%;
   }
   
   .game-container {
