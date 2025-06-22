@@ -146,13 +146,12 @@ export default {
   color: #fff;
   font-weight: 400;
   transition: all 0.3s ease;
-  position: relative;
-  display: flex;
+  position: relative;  display: flex;
   align-items: center;
   gap: 0.7rem;
   padding: 0.7rem 0.8rem;
   border: 1px solid transparent;
-  font-family: 'Space Mono', monospace;
+  font-family: 'Press Start 2P', 'Space Mono', monospace;
 }
 
 .nav-item:hover {
@@ -167,9 +166,10 @@ export default {
 }
 
 .nav-text {
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  font-family: 'Press Start 2P', 'Space Mono', monospace;
 }
 
 /* Tooltip styles */
@@ -186,7 +186,7 @@ export default {
   font-size: 0.7rem;
   white-space: nowrap;
   z-index: 1001;
-  font-family: 'Space Mono', monospace;
+  font-family: 'Press Start 2P', 'Space Mono', monospace;
   letter-spacing: 0.5px;
   text-transform: uppercase;
 }
@@ -257,9 +257,9 @@ export default {
   .nav-links li {
     margin: 1rem 0;
   }
-  
-  .nav-item {
-    font-size: 1.2rem;
+    .nav-item {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.6rem;
     padding: 1rem 2rem;
     border: 1px solid #333;
     gap: 1rem;
@@ -270,11 +270,12 @@ export default {
   }
   
   .nav-icon {
-    font-size: 1.2rem;
+    font-size: 0.8rem;
   }
   
   .nav-text {
-    font-size: 1rem;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 0.5rem;
   }
   
   /* Hide tooltips on mobile */
