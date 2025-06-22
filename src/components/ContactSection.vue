@@ -134,6 +134,8 @@
 </template>
 
 <script>
+import emailjs from '@emailjs/browser'
+
 export default {
   name: 'ContactSection',
   data() {
@@ -239,54 +241,94 @@ export default {
       this.submitMessage = ''
       
       try {
-        // Send email via Vercel API route
-        const response = await fetch('/api/contact', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            name: this.form.name,
-            email: this.form.email,
-            subject: this.form.subject,
-            message: this.form.message
-          })
-        })
+        // Method 1: Try EmailJS first (works without server setup)
+        await this.sendEmailWithEmailJS()
         
-        const data = await response.json()
+      } catch (emailjsError) {
+        console.log('EmailJS failed, trying server API...', emailjsError)
         
-        if (response.ok && data.success) {
-          // Reset form
-          this.form = {
-            name: '',
-            email: '',
-            subject: '',
-            message: ''
-          }
+        try {
+          // Method 2: Fallback to server API
+          await this.sendEmailWithAPI()
           
-          this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
-          this.submitStatus = 'success'
+        } catch (apiError) {
+          console.error('Both email methods failed:', { emailjsError, apiError })
+          this.submitMessage = 'Oops! Something went wrong. Please try again later or email me directly at sirlaudato@gmail.com'
+          this.submitStatus = 'error'
           
-          // Clear success message after 7 seconds
           setTimeout(() => {
             this.submitMessage = ''
-          }, 7000)
-        } else {
-          throw new Error(data.message || 'Failed to send message')
+          }, 8000)
         }
-        
-      } catch (error) {
-        console.error('Form submission error:', error)
-        this.submitMessage = 'Oops! Something went wrong. Please try again later or email me directly at sirlaudato@gmail.com'
-        this.submitStatus = 'error'
-        
-        // Clear error message after 8 seconds
-        setTimeout(() => {
-          this.submitMessage = ''
-        }, 8000)
       }
       
       this.isSubmitting = false
+    },    async sendEmailWithEmailJS() {
+      // Initialize EmailJS with your credentials
+      const serviceID = 'service_g2hgemy'
+      const templateID = 'template_lelcbjt'
+      const publicKey = 'bvS05RCV3uO769JZPiQOx'
+
+      const templateParams = {
+        from_name: this.form.name,
+        from_email: this.form.email,
+        title: this.form.subject, // Maps to {{title}} in your template
+        message: this.form.message
+      }
+
+      await emailjs.send(serviceID, templateID, templateParams, publicKey)
+      
+      // Reset form on success
+      this.form = {
+        name: '',
+        email: '',
+        subject: '',
+        message: ''
+      }
+      
+      this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
+      this.submitStatus = 'success'
+      
+      setTimeout(() => {
+        this.submitMessage = ''
+      }, 7000)
+    },
+
+    async sendEmailWithAPI() {
+      // Send email via Vercel API route
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: this.form.name,
+          email: this.form.email,
+          subject: this.form.subject,
+          message: this.form.message
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (response.ok && data.success) {
+        // Reset form
+        this.form = {
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        }
+        
+        this.submitMessage = 'Thank you! Your message has been sent successfully to sirlaudato@gmail.com'
+        this.submitStatus = 'success'
+        
+        setTimeout(() => {
+          this.submitMessage = ''
+        }, 7000)
+      } else {
+        throw new Error(data.message || 'Failed to send message')
+      }
     }
   }
 }
