@@ -49,7 +49,30 @@
                 <span class="stat-value">{{ gameSpeed }}</span>
               </div>
             </div>
-            <div class="game-board" ref="gameBoard" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">              <!-- Player Paddle -->
+            <div class="game-board" ref="gameBoard" @keydown="handleKeyDown" @keyup="handleKeyUp" tabindex="0">
+              <!-- Mobile Touch Controls -->
+              <div v-if="gameActive && isMobile" class="mobile-controls">
+                <button 
+                  class="touch-btn touch-up" 
+                  @touchstart="handleTouchStart('up')"
+                  @touchend="handleTouchEnd('up')"
+                  @mousedown="handleTouchStart('up')"
+                  @mouseup="handleTouchEnd('up')"
+                >
+                  ↑
+                </button>
+                <button 
+                  class="touch-btn touch-down" 
+                  @touchstart="handleTouchStart('down')"
+                  @touchend="handleTouchEnd('down')"
+                  @mousedown="handleTouchStart('down')"
+                  @mouseup="handleTouchEnd('down')"
+                >
+                  ↓
+                </button>
+              </div>
+
+              <!-- Player Paddle -->
               <div 
                 v-if="gameActive || gameStarted"
                 class="paddle player-paddle" 
@@ -96,12 +119,12 @@
                   <p>PRESS RESUME TO CONTINUE</p>
                 </div>
               </div>
-              
-              <!-- Start Screen -->
+                <!-- Start Screen -->
               <div v-if="!gameActive && !gameStarted" class="game-overlay">
                 <div class="start-screen">
                   <h4>CLASSIC PONG</h4>
-                  <p>USE ↑ ↓ TO MOVE PADDLE</p>
+                  <p v-if="!isMobile">USE ↑ ↓ TO MOVE PADDLE</p>
+                  <p v-if="isMobile">USE TOUCH BUTTONS TO MOVE</p>
                   <p>FIRST TO 5 POINTS WINS</p>
                   <button @click="startGame" class="game-btn">START GAME</button>
                 </div>
@@ -154,17 +177,25 @@ export default {
         speedX: 3,
         speedY: 2
       },
-      
-      // Game mechanics
+        // Game mechanics
       keys: {},
       gameInterval: null,
-        // Game settings
+      
+      // Mobile support
+      isMobile: false,
+      touchControls: {
+        up: false,
+        down: false
+      },
+      
+      // Game settings
       maxScore: 5,
       ballSpeedIncrease: 0.2,
       observer: null
     }
   },
-    mounted() {
+  mounted() {
+    this.detectMobile()
     this.setupKeyboardListeners()
     this.initScrollAnimations()
   },
@@ -174,10 +205,24 @@ export default {
       this.observer.disconnect()
     }
   },
-  
-  methods: {    setupKeyboardListeners() {
+    methods: {
+    detectMobile() {
+      this.isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                      window.innerWidth <= 768
+    },
+
+    handleTouchStart(direction) {
+      if (!this.gameActive || this.gamePaused) return
+      this.touchControls[direction] = true
+    },
+
+    handleTouchEnd(direction) {
+      if (!this.gameActive || this.gamePaused) return
+      this.touchControls[direction] = false
+    },    setupKeyboardListeners() {
       window.addEventListener('keydown', this.handleKeyDown)
       window.addEventListener('keyup', this.handleKeyUp)
+      window.addEventListener('resize', this.detectMobile)
     },
       initScrollAnimations() {
       // Add initial animation trigger for game container
@@ -247,12 +292,15 @@ export default {
       this.ball.speedY = Math.random() * 4 - 2
       
       this.keys = {}
-    },    
-    updatePlayerPaddle() {
-      if (this.keys['ArrowUp'] && this.playerPaddle.y > 0) {
+    },      updatePlayerPaddle() {
+      // Handle keyboard controls
+      const upPressed = this.keys['ArrowUp'] || this.touchControls.up
+      const downPressed = this.keys['ArrowDown'] || this.touchControls.down
+      
+      if (upPressed && this.playerPaddle.y > 0) {
         this.playerPaddle.y -= this.playerPaddle.speed
       }
-      if (this.keys['ArrowDown'] && this.playerPaddle.y < this.boardHeight - this.playerPaddle.height) {
+      if (downPressed && this.playerPaddle.y < this.boardHeight - this.playerPaddle.height) {
         this.playerPaddle.y += this.playerPaddle.speed
       }
     },
@@ -354,12 +402,16 @@ export default {
       this.gameActive = false
       this.gameWinner = winner
       this.cleanup()    },
-    
-    cleanup() {
+      cleanup() {
       if (this.gameInterval) {
         clearInterval(this.gameInterval)
         this.gameInterval = null
       }
+      
+      // Remove event listeners
+      window.removeEventListener('keydown', this.handleKeyDown)
+      window.removeEventListener('keyup', this.handleKeyUp)
+      window.removeEventListener('resize', this.detectMobile)
     }
   }
 }
@@ -758,6 +810,44 @@ export default {
   100% { box-shadow: 0 0 12px rgba(255, 255, 255, 1), 0 0 18px rgba(255, 255, 255, 0.6); }
 }
 
+/* Mobile Touch Controls */
+.mobile-controls {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+}
+
+.touch-btn {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #fff;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+}
+
+.touch-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
 .center-line {
   position: absolute;
   left: 50%;
@@ -950,13 +1040,22 @@ export default {
   .game-header {
     padding: 0.6rem;
   }
-  
-  .game-title {
+    .game-title {
     font-size: 0.7rem;
   }
   
   .game-controls span {
     font-size: 0.6rem;
+  }
+  
+  .mobile-controls {
+    right: 5px;
+  }
+  
+  .touch-btn {
+    width: 35px;
+    height: 35px;
+    font-size: 16px;
   }
 }
 
