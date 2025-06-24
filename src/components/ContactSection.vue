@@ -41,10 +41,10 @@
           </div>
             <div class="social-links pixel-scale-up" ref="socialLinks">
             <h3 class="glitch-effect">Connect With Me</h3>            <div class="social-icons">
-              <a href="#" class="social-icon pixel-pop" title="LinkedIn">
+              <a href="https://www.linkedin.com/in/lawrence-laudato-564b23211/" class="social-icon pixel-pop" title="LinkedIn">
                 <i class="pixelart-icons-font-briefcase"></i>
               </a>
-              <a href="#" class="social-icon pixel-pop" title="GitHub">
+              <a href="https://github.com/SeidoSeido" class="social-icon pixel-pop" title="GitHub">
                 <i class="pixelart-icons-font-github"></i>
               </a>
               <a href="#" class="social-icon pixel-pop" title="Twitter">

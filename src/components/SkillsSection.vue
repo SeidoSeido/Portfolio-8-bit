@@ -71,9 +71,8 @@ export default {
   name: 'SkillsSection',
   data() {
     return {
-      observer: null,
-      frontendSkills: [        { name: 'Vue.js', icon: 'pixelart-icons-font-heart', level: 95 },
-        { name: 'React', icon: 'pixelart-icons-font-zap', level: 90 },
+      observer: null,      frontendSkills: [        { name: 'Vue.js', icon: 'pixelart-icons-font-heart', level: 95 },
+        { name: 'React', icon: 'pixelart-icons-font-sun', level: 90 },
         { name: 'JavaScript', icon: 'pixelart-icons-font-code', level: 95 },
         { name: 'TypeScript', icon: 'pixelart-icons-font-script', level: 85 },
         { name: 'HTML5', icon: 'pixelart-icons-font-article', level: 98 },
@@ -97,8 +96,8 @@ export default {
           year: '2023'
         },
         {
-          name: 'AWS Cloud Practitioner',
-          issuer: 'Amazon Web Services',
+          name: 'Cisco Networking Basics',
+          issuer: 'Cisco',
           year: '2022'
         },
         {
